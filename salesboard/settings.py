@@ -30,6 +30,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split()
 
+# AI Configuration
+OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
+ANTHROPIC_API_KEY = config('ANTHROPIC_API_KEY', default='')
+AI_QUERY_ENABLED = config('AI_QUERY_ENABLED', default=False)
+
 # Application definition
 
 INSTALLED_APPS = [

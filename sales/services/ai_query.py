@@ -83,9 +83,24 @@ sales_product     — alias: p
 """
 
     def get_llm(self, provider: str = "openai", temperature: float = 0.0):
-        if provider == "anthropic" and os.getenv("ANTHROPIC_API_KEY"):
-            return ChatAnthropic(model="claude-3-5-sonnet-20240620", temperature=temperature)
-        return ChatOpenAI(model="gpt-4o-mini", temperature=temperature)
+        anthropic_key = getattr(settings, "ANTHROPIC_API_KEY", "") or os.getenv("ANTHROPIC_API_KEY", "")
+        openai_key = getattr(settings, "OPENAI_API_KEY", "") or os.getenv("OPENAI_API_KEY", "")
+
+        if provider == "anthropic" and anthropic_key:
+            return ChatAnthropic(
+                model="claude-3-5-sonnet-20240620",
+                temperature=temperature,
+                api_key=anthropic_key,
+            )
+        if not openai_key:
+            raise ValueError(
+                "OPENAI_API_KEY is not set. Add it to .env and restart the service."
+            )
+        return ChatOpenAI(
+            model="gpt-4o-mini",
+            temperature=temperature,
+            api_key=openai_key,
+        )
 
     def clean_sql(self, sql: str) -> str:
         if not sql:
