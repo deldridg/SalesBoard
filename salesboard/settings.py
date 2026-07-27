@@ -28,8 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # DEBUG = True
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['deldridg.ddns.net', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split()
 
 # Application definition
 
