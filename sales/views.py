@@ -4,7 +4,14 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .services.ai_query import AIQueryService
 
-ai_service = AIQueryService()
+# ai_service = AIQueryService()
+_ai_service = None
+
+def get_ai_service():
+    global _ai_service
+    if _ai_service is None:
+        _ai_service = AIQueryService()
+    return _ai_service
 
 SUGGESTED_QUERIES = [
     {"label": "NSW Sales Last Year",  "question": "What were total sales in NSW last year?"},
@@ -30,9 +37,9 @@ def ai_query_api(request):
                 return JsonResponse({'error': 'No question provided'}, status=400)
 
             if mode == 'insights':
-                result = ai_service.insights(topic=question, provider=provider)
+                result = get_ai_service().insights(topic=question, provider=provider)
             else:
-                result = ai_service.query(question=question, provider=provider)
+                result = get_ai_service().query(question=question, provider=provider)
 
             return JsonResponse(result)
 
